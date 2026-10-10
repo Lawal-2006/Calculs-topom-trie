@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calculs topométrie</title>
+<style>
+:root{--bg:#eef2f5;--card:#fff;--tx:#14263a;--mut:#5b6b7b;--pri:#14324d;--onpri:#fff;--bd:#c9d3dc;--inp:#fff3b0;--ok:#1e7b43;--okbg:#e1f3e8;--bad:#a4261c;--badbg:#fbe4e1;--grid:#dde5ec;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a25;--card:#172635;--tx:#e6edf3;--mut:#9fb0c0;--pri:#7fb3e6;--onpri:#0f1a25;--bd:#2c4156;--inp:#4a4217;--ok:#6fd49a;--okbg:#14352366;--bad:#ff9d94;--badbg:#4a1f1b88;--grid:#1a2b3b}}
+:root[data-theme="dark"]{--bg:#0f1a25;--card:#172635;--tx:#e6edf3;--mut:#9fb0c0;--pri:#7fb3e6;--onpri:#0f1a25;--bd:#2c4156;--inp:#4a4217;--ok:#6fd49a;--okbg:#14352366;--bad:#ff9d94;--badbg:#4a1f1b88;--grid:#1a2b3b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--tx);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px 14px 40px}
+h1{font:700 26px/1.2 Georgia,serif;margin:8px 0 2px;color:var(--pri)}
+h2{font:700 18px Georgia,serif;margin:0 0 4px;color:var(--pri)}
+.sub{color:var(--mut);margin:0 0 14px;font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 14px;border-radius:6px;font:inherit;cursor:pointer}
+nav button[aria-selected=true]{background:var(--pri);color:var(--onpri);border-color:var(--pri)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pri);outline-offset:1px}
+section{display:none;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:16px}
+section.on{display:block}
+.src{color:var(--mut);font-size:12px;margin:0 0 12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:2px}
+input,select{font:inherit;font-size:14px;font-variant-numeric:tabular-nums;color:var(--tx);background:var(--inp);border:1px solid var(--bd);border-radius:4px;padding:6px 8px}
+input{width:112px}
+select{max-width:300px}
+.sc{overflow-x:auto;margin:6px 0 10px}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:13px;min-width:100%}
+th,td{border:1px solid var(--bd);padding:4px 6px;text-align:right;white-space:nowrap}
+th{background:var(--pri);color:var(--onpri);font-weight:600;text-align:center}
+td input{width:92px}
+tr.t td{font-weight:700}
+.b{font:inherit;font-size:13px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:5px;padding:6px 12px;cursor:pointer;margin-right:6px}
+.v{display:inline-block;padding:6px 12px;border-radius:5px;font-weight:700;margin:4px 0}
+.v.ok{background:var(--okbg);color:var(--ok)}.v.ko{background:var(--badbg);color:var(--bad)}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;max-width:520px;margin:6px 0}
+.kv span:nth-child(odd){color:var(--mut)}.kv span:nth-child(even){font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.nt{color:var(--mut);font-size:12px;margin-top:10px}
+.h3{font:700 15px Georgia,serif;color:var(--pri);margin:16px 0 4px}
+footer{color:var(--mut);font-size:12px;margin-top:14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.bar .b{background:var(--pri);color:var(--onpri);border-color:var(--pri);padding:8px 14px;font-weight:600}
+.bar .b.sec{background:var(--card);color:var(--tx);border-color:var(--bd)}
+.pheader{display:none}
+@media print{
+@page{size:A4 landscape;margin:12mm}
+:root,:root:not([data-theme="light"]),:root[data-theme="dark"]{--bg:#fff;--card:#fff;--tx:#000;--mut:#444;--pri:#14324d;--onpri:#fff;--bd:#999;--inp:#fff;--ok:#1e7b43;--okbg:#e1f3e8;--bad:#a4261c;--badbg:#fbe4e1}
+body{background:#fff;color:#000;font-size:12px}
+nav,.bar,.b,footer,.sub,h1,.ed{display:none!important}
+main{max-width:none;padding:0}
+.pheader{display:flex;justify-content:space-between;border-bottom:2px solid #14324d;padding-bottom:4px;margin-bottom:10px;font-size:14px}
+section{display:none!important;border:none;padding:0}
+section.on{display:block!important}
+body.all section{display:block!important;break-before:page}
+body.all section:first-of-type{break-before:auto}
+input,select{background:transparent;border:none;border-bottom:1px solid #777;border-radius:0;width:auto;max-width:90px;padding:0 2px}
+select{max-width:none;-webkit-appearance:none;appearance:none}
+.sc{overflow:visible}
+table{font-size:11px}
+tr{break-inside:avoid}
+th,.v{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Calculs de topométrie</h1>
+<p class="sub">Les tableaux de calcul du classeur Excel, utilisables en ligne. Angles en grades (gon), longueurs et coordonnées en mètres. Cases jaunes : à saisir.</p>
+<nav id="nav" role="tablist"></nav>
+<div class="bar"><button class="b" id="pdf1">Télécharger cet onglet en PDF</button><button class="b sec" id="pdfAll">Télécharger tous les calculs en PDF</button></div>
+<div class="pheader" id="ph"></div>
+
+<!-- 0 : distance, gisement, coordonnées polaires -->
+<section id="s0"><h2>Distance et gisement</h2><p class="src">Cours de Topométrie Générale, §25</p>
+<div class="row"><label>X A<input id="xa" value="1000"></label><label>Y A<input id="ya" value="2000"></label><label>X B<input id="xb" value="1150"></label><label>Y B<input id="yb" value="2080"></label></div>
+<div id="r0"></div>
+
+<div class="h3">Coordonnées à partir du gisement et de la distance</div>
+<p class="src">XP = XS + D·sin V · YP = YS + D·cos V (polygonation, §21 et §32)</p>
+<div class="row"><label>X station S<input id="gx" value="1000"></label><label>Y station S<input id="gy" value="2000"></label>
+<label>Mode de calcul<select id="gm"><option value="ray">Rayonnement : tous les points depuis S</option><option value="chem">Cheminement : de proche en proche</option></select></label></div>
+<div class="ed" id="e0"></div><div id="r0b"></div>
+<p class="nt">Rayonnement : chaque point est calculé depuis la station S. Cheminement : chaque point part du point précédent (le premier part de S). V est le gisement du côté, D sa distance horizontale.</p></section>
+
+<!-- 1 : polygonale fermée -->
+<section id="s1"><h2>Polygonale fermée</h2><p class="src">Cours de Topométrie Générale, §8.1 et §21 · angles intérieurs, cheminement dans le sens horaire</p>
+<div class="row">
+<label>Données de départ<select id="pm"><option value="ang">Angles mesurés → gisements → coordonnées</option><option value="gis">Gisements connus → coordonnées</option></select></label>
+<label>Compensation linéaire<select id="pk"><option value="d">Proportionnelle aux distances</option><option value="proj">Proportionnelle aux projections</option></select></label></div>
+<div class="row"><label data-for="pm" data-m="ang">Écart type e (gon)<input id="pe" value="0.001"></label><label data-for="pm" data-m="ang">Gisement V(1→2) (gon)<input id="pv" value="8.0495"></label><label>X sommet 1<input id="px" value="1000"></label><label>Y sommet 1<input id="py" value="1000"></label></div>
+<div class="ed" id="e1" data-for="pm" data-m="ang"></div><div class="ed" id="e1g" data-for="pm" data-m="gis"></div><div id="r1"></div>
+<p class="nt">Écart type usuel : T0 0,002 · T05 et T06 0,003 · T1 et T16 0,001 · T2 0,00025 gon. Mode gisements : saisir le gisement et la distance de chaque côté (sommet i → sommet i+1, le dernier côté ramène au sommet 1).</p></section>
+
+<!-- 2 : polygonale encadrée -->
+<section id="s2"><h2>Polygonale encadrée</h2><p class="src">Cours de Topométrie Générale, §8.1 et §22 · points de départ et d'arrivée connus en coordonnées</p>
+<div class="row">
+<label>Données de départ<select id="am"><option value="ang">Angles mesurés → gisements → coordonnées</option><option value="gis">Gisements connus → coordonnées</option></select></label>
+<label>Compensation linéaire<select id="ak"><option value="d">Proportionnelle aux distances</option><option value="proj">Proportionnelle aux projections</option></select></label>
+<label data-for="am" data-m="ang">Type d'angles topo<select id="as"><option value="g">Angles de gauche</option><option value="d">Angles de droite</option></select></label></div>
+<div class="row"><label>X départ<input id="adx" value="1000"></label><label>Y départ<input id="ady" value="1000"></label><label>X arrivée<input id="aax" value="1220.909"></label><label>Y arrivée<input id="aay" value="1108.403"></label></div>
+<div class="row" data-for="am" data-m="ang"><label>Gisement de départ Vd (gon)<input id="avd" value="20"></label><label>Gisement d'arrivée Va (gon)<input id="ava" value="120"></label><label>Écart type e (gon)<input id="ae" value="0.001"></label></div>
+<div class="ed" id="eE" data-for="am" data-m="ang"></div><div class="ed" id="eEg" data-for="am" data-m="gis"></div><div id="rE"></div>
+<p class="nt">Mode angles : une ligne par station (départ et arrivée compris), d est la distance du côté qui suit la station, la dernière ligne n'a pas de distance. Vd est le gisement de la direction de référence qui arrive au point de départ, Va celui de la direction qui part du point d'arrivée. Compensation angulaire pondérée par Pi = 1/d(i−1) + 1/d(i+1), d en km, sans distance voisine : terme nul. Tolérance Ta = (8/3)·e·√n prise avec n = nombre d'angles mesurés (à confirmer avec le cours). Mode gisements : saisir le gisement et la distance de chaque côté, de la station de départ à celle d'arrivée.</p></section>
+
+<!-- 3 : nivellement -->
+<section id="s3"><h2>Nivellement</h2><p class="src">Cours de Topométrie Générale, chapitre Nivellement (direct §1, indirect §2) et tolérances §82</p>
+<div class="row"><label>Type de nivellement<select id="nt">
+<option value="enc">Direct par cheminement encadré</option>
+<option value="fer">Direct par cheminement fermé</option>
+<option value="ant">Direct par cheminement à antenne (ouvert)</option>
+<option value="ar">Direct à antenne avec cheminement retour (contrôle)</option>
+<option value="ray">Direct par rayonnement</option>
+<option value="trigc">Indirect trigonométrique : cheminement</option>
+<option value="trigr">Indirect trigonométrique : rayonnement</option></select></label>
+<label data-for="nt" data-m="enc fer ar trigc">Répartition de l'écart<select id="nm"><option value="d">Proportionnelle aux distances</option><option value="dz">Proportionnelle aux |ΔZ|</option></select></label>
+<label data-for="nt" data-m="trigc trigr">Distance mesurée<select id="td"><option value="di">Inclinée Di : ΔH = hi + Di·cos V − hv</option><option value="dh">Horizontale Dh : ΔH = hi + Dh·cotan V − hv</option></select></label>
+<label data-for="nt" data-m="trigc trigr">Sphéricité et réfraction<select id="tc"><option value="no">Non (comme dans le cours)</option><option value="yes">Oui : + (1 − k)·Dh²/(2R), k = 0,13</option></select></label></div>
+<div class="row">
+<label data-for="nt" data-m="enc fer ant ar trigc">Altitude départ ZA (m)<input id="za" value="100"></label>
+<label data-for="nt" data-m="enc">Altitude arrivée ZB (m)<input id="zb" value="101.631"></label>
+<label data-for="nt" data-m="trigc">Altitude arrivée ZB (m), vide = antenne<input id="zbt" value="102.553"></label>
+<label data-for="nt" data-m="ray">Altitude du repère ZRN (m)<input id="zr" value="100"></label>
+<label data-for="nt" data-m="ray">Lecture arrière sur le repère (m)<input id="lar" value="1.482"></label>
+<label data-for="nt" data-m="trigr">Altitude station ZS (m)<input id="zs" value="100"></label>
+<label data-for="nt" data-m="trigr">Hauteur instrument hi (m)<input id="hs" value="1.55"></label></div>
+
+<div data-for="nt" data-m="ar"><p class="nt"><b>Cheminement aller</b> (de A vers B)</p></div>
+<div class="ed" id="e2" data-for="nt" data-m="enc ant ar"></div>
+<div class="ed" id="e2f" data-for="nt" data-m="fer"></div>
+<div data-for="nt" data-m="ar"><p class="nt"><b>Cheminement retour</b> (de B vers A)</p><div class="ed" id="e2r"></div></div>
+<div data-for="nt" data-m="enc fer ant"><p class="nt"><b>Points rayonnés (nivellement mixte, facultatif)</b> : numéro de la station du tableau ci-dessus d'où l'on rayonne, nom du point et lecture avant. Laisser vide s'il n'y a pas de rayonnement.</p><div class="ed" id="e2m"></div></div>
+<div class="ed" id="e2p" data-for="nt" data-m="ray"></div>
+<div class="ed" id="e2t" data-for="nt" data-m="trigc"></div>
+<div class="ed" id="e2s" data-for="nt" data-m="trigr"></div>
+<div id="r2"></div></section>
+
+<!-- 4 : cubature -->
+<section id="s4"><h2>Profil fictif et cubature</h2><p class="src">Cours de Géométrie Route, §112 et §13</p>
+<h2 style="font-size:15px">Profil fictif</h2>
+<div class="row"><label>h1 (m)<input id="h1" value="0.6"></label><label>h2 (m)<input id="h2" value="0.4"></label><label>Distance D (m)<input id="dd" value="25"></label></div>
+<div id="r3a"></div>
+<h2 style="font-size:15px;margin-top:14px">Tableau de cubature</h2>
+<div class="ed" id="e3"></div><div id="r3"></div>
+<p class="nt">La distance de la première ligne n'est pas utilisée. Profil fictif : mettre des superficies nulles.</p></section>
+
+<!-- 5 : indices -->
+<section id="s5"><h2>Indices spectraux</h2><p class="src">Cours Cartographie, Télédétection et SIG (ENSTP, 2024), §9 · réflectances Landsat 8 OLI entre 0 et 1</p>
+<div class="row"><label>Vert (B3)<input id="g" value="0.09"></label><label>Rouge (B4)<input id="r" value="0.07"></label><label>NIR (B5)<input id="ni" value="0.35"></label><label>SWIR1 (B6)<input id="sw" value="0.18"></label><label>L (SAVI)<input id="l" value="0.5"></label></div>
+<div id="r4"></div>
+<p class="nt">À confirmer avec l'enseignant : le cours écrit deux versions du NDWI, et le BSI y est identique au NDBI. Le SAVI et le NDWI utilisent ici les formules usuelles.</p></section>
+
+<footer>Données d'exemple fictives. Résultats à vérifier avant tout usage professionnel.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id),n=v=>parseFloat(String(v).replace(',','.')),R=Math.PI/200;
+const f=(x,d=3)=>isFinite(x)?x.toFixed(d).replace('.',','):'–';
+const mod=(a,m)=>((a%m)+m)%m, gis=(dx,dy)=>mod(Math.atan2(dx,dy)/R,400), nrm=a=>mod(a+200,400)-200;
+const S=a=>a.reduce((s,x)=>s+x,0);
+const kv=a=>'<div class="kv">'+a.map(x=>`<span>${x[0]}</span><span>${x[1]}</span>`).join('')+'</div>';
+const vd=(ok,t)=>`<span class="v ${ok?'ok':'ko'}">${t}</span>`;
+const tb=(h,rows)=>'<div class="sc"><table><tr>'+h.map(x=>`<th>${x}</th>`).join('')+'</tr>'+rows.map(r=>`<tr${r.t?' class="t"':''}>`+r.c.map(x=>`<td>${x}</td>`).join('')+'</tr>').join('')+'</table></div>';
+const MSG='<p class="nt">Complète toutes les cases pour afficher le calcul.</p>';
+const nt_=t=>`<p class="nt">${t}</p>`;
+const bad=a=>a.some(x=>isNaN(x));
+
+function editor(el,heads,rows,calc){
+  el.innerHTML='<div class="sc"><table><tr>'+heads.map(h=>`<th>${h}</th>`).join('')+'</tr>'+
+  rows.map((r,i)=>'<tr>'+r.map((v,j)=>`<td><input inputmode="decimal" value="${v}" data-i="${i}" data-j="${j}" aria-label="${heads[j]} ligne ${i+1}"></td>`).join('')+'</tr>').join('')+
+  '</table></div><button class="b" data-a="add">Ajouter une ligne</button><button class="b" data-a="del">Supprimer la dernière</button>';
+  el.oninput=e=>{const t=e.target.dataset;if(t.i!==undefined){rows[t.i][t.j]=e.target.value;calc();}};
+  el.onclick=e=>{const a=e.target.dataset.a;if(a==='add')rows.push(rows[0].map(()=>''));else if(a==='del'&&rows.length>2)rows.pop();else return;editor(el,heads,rows,calc);calc();};
+}
+
+/* noyau commun aux polygonales : ΔX, ΔY, fermeture et compensation
+   V, d : gisements et distances des côtés ; (tx,ty) : écart théorique ΣΔX, ΣΔY attendu (0 si fermée) */
+function core(V,d,meth,tx,ty){
+  const dx=d.map((x,i)=>x*Math.sin(V[i]*R)),dy=d.map((x,i)=>x*Math.cos(V[i]*R));
+  const sd=S(d),ex=S(dx)-tx,ey=S(dy)-ty,fl=Math.hypot(ex,ey),sax=S(dx.map(Math.abs)),say=S(dy.map(Math.abs));
+  const cx=dx.map((x,i)=>x-(meth==='proj'?(sax?ex*Math.abs(x)/sax:0):ex*d[i]/sd));
+  const cy=dy.map((y,i)=>y-(meth==='proj'?(say?ey*Math.abs(y)/say:0):ey*d[i]/sd));
+  return{dx,dy,cx,cy,sd,ex,ey,fl};
+}
+const methTxt=m=>m==='proj'?'Compensation proportionnelle aux projections : ΔXc = ΔX − ex·|ΔX|/Σ|ΔX|.':'Compensation proportionnelle aux distances : ΔXc = ΔX − ex·d/Σd.';
+
+/* 0 : distance et gisement */
+function c0(){const xa=n($('xa').value),ya=n($('ya').value),xb=n($('xb').value),yb=n($('yb').value),dx=xb-xa,dy=yb-ya,V=gis(dx,dy);
+$('r0').innerHTML=kv([['Départ ΔX (m)',f(dx)],['Latitude ΔY (m)',f(dy)],['Distance AB (m)',f(Math.hypot(dx,dy))],['Gisement VAB (gon)',f(V,4)],['Gisement inverse VBA (gon)',f(mod(V+200,400),4)]])
++'<p class="nt">V = arctan(ΔX/ΔY) corrigé selon le quadrant ; VBA = VAB ± 200 gon.</p>';}
+
+/* 0b : coordonnées à partir du gisement et de la distance */
+const G0=[['P1','50','100'],['P2','150','80'],['P3','250','60'],['P4','350','40']];
+function c0b(){const Xs=n($('gx').value),Ys=n($('gy').value),m=$('gm').value;
+if(bad([Xs,Ys])||G0.some(r=>bad([n(r[1]),n(r[2])]))){$('r0b').innerHTML=MSG;return;}
+let X=Xs,Y=Ys;const rows=G0.map((r,i)=>{const V=n(r[1]),D=n(r[2]),dx=D*Math.sin(V*R),dy=D*Math.cos(V*R),x=(m==='chem'?X:Xs)+dx,y=(m==='chem'?Y:Ys)+dy;if(m==='chem'){X=x;Y=y;}
+return{c:[r[0]||i+1,f(V,4),f(D),f(dx),f(dy),f(x),f(y)]};});
+$('r0b').innerHTML=tb(['Point','V (gon)','D (m)','ΔX (m)','ΔY (m)','X (m)','Y (m)'],rows);}
+
+/* 1 : polygonale fermée */
+const P=[['88.3179','118.956'],['114.7841','113.631'],['99.5074','122.594'],['97.3913','140.225']];
+const PG=[['8.0495','118.956'],['93.2654','113.631'],['193.758','122.594'],['296.3667','140.225']];
+function c1(){const mode=$('pm').value,meth=$('pk').value,X1=n($('px').value),Y1=n($('py').value);
+let V,d,B=null,e,ea,Ta;
+if(mode==='ang'){e=n($('pe').value);const V0=n($('pv').value);B=P.map(r=>n(r[0]));d=P.map(r=>n(r[1]));
+  if(bad(B.concat(d,[e,V0,X1,Y1]))){$('r1').innerHTML=MSG;return;}
+  V=[];B.forEach((b,i)=>{V[i]=i?mod(V[i-1]+200-b,400):V0;});}
+else{V=PG.map(r=>n(r[0]));d=PG.map(r=>n(r[1]));if(bad(V.concat(d,[X1,Y1]))){$('r1').innerHTML=MSG;return;}}
+const N=d.length,k=core(V,d,meth,0,0),X=[X1],Y=[Y1];
+for(let i=1;i<N;i++){X[i]=X[i-1]+k.cx[i-1];Y[i]=Y[i-1]+k.cy[i-1];}
+const head=['Som.'].concat(B?['β (gon)']:[],['V (gon)','d (m)','ΔX','ΔY','ΔXc','ΔYc','X (m)','Y (m)']);
+const rows=d.map((x,i)=>({c:[i+1].concat(B?[f(B[i],4)]:[],[f(V[i],4),f(x),f(k.dx[i],4),f(k.dy[i],4),f(k.cx[i],4),f(k.cy[i],4),f(X[i]),f(Y[i])])}));
+rows.push({t:1,c:['Σ'].concat(B?[f(S(B),4)]:[],['',f(k.sd),f(S(k.dx),4),f(S(k.dy),4),f(S(k.cx),4),f(S(k.cy),4),'',''])});
+const lin=[['ex ; ey (m)',f(k.ex,4)+' ; '+f(k.ey,4)],['Écart linéaire fl (m)',f(k.fl,4)],['Précision relative',k.fl>0?'1 / '+Math.round(k.sd/k.fl):'parfaite']];
+let h=tb(head,rows);
+if(B){const sB=S(B);ea=sB-200*(N-2);Ta=8/3*e*Math.sqrt(N);const ok=Math.abs(ea)<=Ta;
+  h+=kv([['Σβ théorique = 200(n − 2) (gon)',f(200*(N-2),4)],['Erreur angulaire ea (gon)',f(ea,4)],['Tolérance Ta = (8/3)·e·√n (gon)',f(Ta,4)]].concat(lin))+
+  vd(ok,ok?'Fermeture angulaire acceptable':'À reprendre : |ea| dépasse la tolérance');}
+else h+=kv([['Nombre de côtés',N]].concat(lin));
+$('r1').innerHTML=h+nt_(methTxt(meth));}
+
+/* 2 : polygonale encadrée */
+const AE=[['230.0012','85.431'],['219.9985','92.128'],['225.0008','78.669'],['225.0004','']];
+const AG=[['50.0012','85.431'],['69.9997','92.128'],['95.0005','78.669']];
+function cE(){const mode=$('am').value,meth=$('ak').value,XD=n($('adx').value),YD=n($('ady').value),XA=n($('aax').value),YA=n($('aay').value);
+if(bad([XD,YD,XA,YA])){$('rE').innerHTML=MSG;return;}
+let V,d,B=null,Bc,Pw,ea,Ta,Va,s,N;
+if(mode==='ang'){const Vd=n($('avd').value),e=n($('ae').value);Va=n($('ava').value);s=$('as').value==='g'?1:-1;
+  B=AE.map(r=>n(r[0]));d=AE.slice(0,-1).map(r=>n(r[1]));N=B.length;
+  if(bad(B.concat(d,[Vd,Va,e]))||N<2){$('rE').innerHTML=MSG;return;}
+  const km=d.map(x=>x/1000);
+  Pw=B.map((b,i)=>(i>0?1/km[i-1]:0)+(i<N-1?1/km[i]:0));
+  const Vcal=mod(Vd+s*(S(B)-200*N),400);ea=nrm(Vcal-Va);Ta=8/3*e*Math.sqrt(N);
+  const sp=S(Pw);Bc=B.map((b,i)=>b-s*ea*Pw[i]/sp);
+  V=[];Bc.slice(0,N-1).forEach((b,i)=>{V[i]=mod((i?V[i-1]:Vd)+s*(b-200),400);});
+  var Vfin=mod(V[N-2]+s*(Bc[N-1]-200),400);}
+else{V=AG.map(r=>n(r[0]));d=AG.map(r=>n(r[1]));N=d.length+1;if(bad(V.concat(d))){$('rE').innerHTML=MSG;return;}}
+const k=core(V,d,meth,XA-XD,YA-YD),X=[XD],Y=[YD];
+for(let i=1;i<N;i++){X[i]=X[i-1]+k.cx[i-1];Y[i]=Y[i-1]+k.cy[i-1];}
+const head=['Sta.'].concat(B?['β (gon)','Pi','β comp. (gon)']:[],['V (gon)','d (m)','ΔX','ΔY','ΔXc','ΔYc','X (m)','Y (m)']);
+const rows=[];for(let i=0;i<N;i++){const last=i===N-1;
+  rows.push({c:[i+1].concat(B?[f(B[i],4),f(Pw[i],2),f(Bc[i],4)]:[],[last?(B?f(Vfin,4):'–'):f(V[i],4),last?'':f(d[i]),last?'':f(k.dx[i],4),last?'':f(k.dy[i],4),last?'':f(k.cx[i],4),last?'':f(k.cy[i],4),f(X[i]),f(Y[i])])});}
+rows.push({t:1,c:['Σ'].concat(B?[f(S(B),4),'',f(S(Bc),4)]:[],['',f(k.sd),f(S(k.dx),4),f(S(k.dy),4),f(S(k.cx),4),f(S(k.cy),4),'',''])});
+const lin=[['ex = Xac − Xa ; ey = Yac − Ya (m)',f(k.ex,4)+' ; '+f(k.ey,4)],['Écart linéaire fl (m)',f(k.fl,4)],['Précision relative',k.fl>0?'1 / '+Math.round(k.sd/k.fl):'parfaite']];
+let h=tb(head,rows);
+if(B){const ok=Math.abs(ea)<=Ta;
+  h+=kv([['Gisement d\'arrivée calculé Va cal (gon)',f(mod(Va+ea,400),4)],['Erreur angulaire ea = Va cal − Va (gon)',f(ea,4)],['Tolérance Ta = (8/3)·e·√n (gon)',f(Ta,4)]].concat(lin))+
+  vd(ok,ok?'Fermeture angulaire acceptable : angles compensés':'À reprendre : |ea| dépasse la tolérance');}
+else h+=kv([['Nombre de côtés',N-1]].concat(lin));
+$('rE').innerHTML=h+nt_(methTxt(meth)+(B?' Gisements transmis par V(i→i+1) = V(i−1→i) '+(s>0?'+ β − 200':'− β + 200')+' avec les angles compensés.':''));}
+
+/* 3 : nivellement */
+const NV=[['1.532','1.205','60'],['1.874','0.912','55'],['1.120','1.980','70'],['2.210','1.101','65'],['1.478','1.381','50']];
+const NF=[['1.532','1.205','60'],['1.874','0.912','55'],['1.120','1.980','70'],['1.101','1.532','65'],['1.250','1.245','50']];
+const NR=[['1.300','1.400','50'],['0.980','2.090','65'],['1.870','1.015','70'],['0.905','1.865','55'],['1.250','1.568','60']];
+const NM=[['1','R1','1.100'],['3','R2','1.650']];
+const NP=[['R1','1.250'],['R2','0.980'],['R3','1.870']];
+const TC=[['120.345','98.5','1.55','1.60'],['95.210','101.2','1.55','1.60'],['150.880','99.3','1.55','1.60']];
+const TS=[['R1','85.210','99.25','1.60'],['R2','142.880','101.4','1.60'],['R3','60.500','97.8','1.60']];
+const tolN=(N,L)=>N/L<=16?4*Math.sqrt(36*L+L*L):Math.sqrt(36*N+N*N);
+const rep=(dz,d,ez,m)=>{const b=m==='dz'?dz.map(Math.abs):d,s=S(b);return dz.map((x,i)=>x-(s?ez*b[i]/s:0));};
+const parseCh=rows=>{const A=rows.map(r=>n(r[0])),V=rows.map(r=>n(r[1])),d=rows.map(r=>n(r[2]));return{A,V,d,bad:bad(A.concat(V,d))};};
+const repTxt=m=>m==='dz'?'ΔZc = ΔZ − ez·|ΔZ|/Σ|ΔZ|.':'ΔZc = ΔZ − ez·d/Σd.';
+
+/* rayonnement depuis les stations d'un cheminement (nivellement mixte) : les dénivelées rayonnées ne sont pas compensées */
+function raysMixte(A,Zb){
+  const rr=NM.filter(r=>r[0]!==''||r[1]!==''||r[2]!=='');if(!rr.length)return'';
+  const rows=rr.map(r=>{const s=Math.round(n(r[0])),lav=n(r[2]);
+    if(!(s>=1&&s<=A.length)||isNaN(lav))return{c:[r[1]||'–',r[0]||'–','–',r[2]||'–','–']};
+    const plan=Zb[s-1]+A[s-1];return{c:[r[1]||'–',s,f(plan),f(lav),f(plan-lav)]};});
+  return '<p class="nt"><b>Points rayonnés</b> : Z = (Z du point arrière de la station + LAR) − LAV, avec l\'altitude compensée.</p>'+tb(['Point','Station','Plan de visée (m)','LAV (m)','Z (m)'],rows);}
+
+function cChem(m){
+  const ZA=n($('za').value),ZB=n($('zb').value),meth=$('nm').value,p=parseCh(m==='fer'?NF:NV);
+  if(p.bad||isNaN(ZA)||(m==='enc'&&isNaN(ZB)))return MSG;
+  const {A,V,d}=p,N=A.length,dz=A.map((a,i)=>a-V[i]),sd=S(d),L=sd/1000,q=N/L;
+  const ez=m==='ant'?0:ZA+S(dz)-(m==='enc'?ZB:ZA),T=tolN(N,L),ok=Math.abs(ez)*1000<=T;
+  const c=m==='ant'?dz:rep(dz,d,ez,meth);
+  let z=ZA;const Zb=[ZA];
+  const rows=c.map((x,i)=>{z+=x;Zb.push(z);return{c:[i+1,f(A[i]),f(V[i]),f(d[i],1),f(dz[i]),f(x,4),f(z)]};});
+  rows.push({t:1,c:['Σ',f(S(A)),f(S(V)),f(sd,1),f(S(dz)),f(S(c),4),'']});
+  let h=tb(['Station','LAR (m)','LAV (m)','d (m)','ΔZ (m)','ΔZc (m)','Z avant (m)'],rows);
+  const base=[['N ; L (km) ; n = N/L',N+' ; '+f(L)+' ; '+f(q,1)]];
+  if(m==='ant')h+=kv(base.concat([['Altitude du dernier point (m)',f(z)]]))+nt_('Cheminement à antenne : aucun contrôle possible, toute erreur de lecture est fatale. Pour se contrôler, faire le cheminement retour (type « Antenne avec cheminement retour »).');
+  else h+=kv(base.concat([[m==='fer'?'Écart de fermeture ez = ΣΔZ (mm)':'Écart de fermeture ez = ZA + ΣΔZ − ZB (mm)',f(ez*1000,1)],['Tolérance T (mm)',f(T,1)],['Altitude point d\'arrivée compensée (m)',f(z)]]))+
+    vd(ok,ok?'Acceptable : compenser les dénivelées':'À reprendre : |ez| dépasse la tolérance')+
+    nt_('Si n ≤ 16 : T = 4·√(36L + L²) ; sinon T = √(36N + N²). '+repTxt(meth)+' Unité de T supposée en mm, à confirmer.'+(m==='fer'?' Cheminement fermé : ZB = ZA.':''));
+  return h+raysMixte(A,Zb);}
+
+function cAR(){
+  const ZA=n($('za').value),meth=$('nm').value,a=parseCh(NV),r=parseCh(NR);
+  if(a.bad||r.bad||isNaN(ZA))return MSG;
+  const dzA=a.A.map((x,i)=>x-a.V[i]),dzR=r.A.map((x,i)=>x-r.V[i]),sdA=S(a.d),sdR=S(r.d),N=dzA.length+dzR.length,L=(sdA+sdR)/1000;
+  const ez=S(dzA)+S(dzR),T=tolN(N,L),ok=Math.abs(ez)*1000<=T,Dm=(S(dzA)-S(dzR))/2,cA=rep(dzA,a.d,ez/2,meth);
+  let z=ZA;const ra=cA.map((x,i)=>{z+=x;return{c:[i+1,f(a.A[i]),f(a.V[i]),f(a.d[i],1),f(dzA[i]),f(x,4),f(z)]};});
+  ra.push({t:1,c:['Σ',f(S(a.A)),f(S(a.V)),f(sdA,1),f(S(dzA)),f(S(cA),4),'']});
+  const rr=dzR.map((x,i)=>({c:[i+1,f(r.A[i]),f(r.V[i]),f(r.d[i],1),f(x)]}));
+  rr.push({t:1,c:['Σ',f(S(r.A)),f(S(r.V)),f(sdR,1),f(S(dzR))]});
+  return '<p class="nt"><b>Aller</b></p>'+tb(['Station','LAR (m)','LAV (m)','d (m)','ΔZ (m)','ΔZc (m)','Z avant (m)'],ra)+
+  '<p class="nt"><b>Retour</b></p>'+tb(['Station','LAR (m)','LAV (m)','d (m)','ΔZ (m)'],rr)+
+  kv([['ΣΔZ aller (m)',f(S(dzA))],['ΣΔZ retour (m)',f(S(dzR))],['Écart ez = ΣΔZ aller + ΣΔZ retour (mm)',f(ez*1000,1)],['Tolérance T (mm), N ; L (km)',f(T,1)+' ; '+N+' ; '+f(L)],['Dénivelée moyenne A→B (m)',f(Dm)],['Altitude de B déduite (m)',f(ZA+Dm)]])+
+  vd(ok,ok?'Acceptable : altitude de B = moyenne aller-retour':'À reprendre : |ez| dépasse la tolérance')+
+  nt_('Le retour ramène en A : ez = ΣΔZ aller + ΣΔZ retour. Les dénivelées de l\'aller sont corrigées de ez/2 ('+repTxt(meth).replace('ez','ez/2')+'). Même formule de tolérance que le cheminement fermé, avec N et L du circuit complet.');}
+
+function cRay(){
+  const ZR=n($('zr').value),LA=n($('lar').value);
+  if(bad([ZR,LA])||NP.some(r=>isNaN(n(r[1]))))return MSG;
+  const AN=ZR+LA,rows=NP.map((r,i)=>({c:[r[0]||i+1,f(n(r[1])),f(AN-n(r[1]))]}));
+  return kv([['Altitude du plan de visée AN = ZRN + LAR (m)',f(AN)]])+tb(['Point','LAV (m)','Altitude Z = AN − LAV (m)'],rows)+
+  nt_('Rayonnement : aucun contrôle sur les déterminations, toute erreur de lecture est indétectable. Pour se contrôler, viser un second repère connu.');}
+
+/* nivellement indirect */
+function dH(D,V,hi,hv){
+  const di=$('td').value==='di',Dh=di?D*Math.sin(V*R):D,dh0=di?D*Math.cos(V*R):D/Math.tan(V*R),c=$('tc').value==='yes'?(1-0.13)*Dh*Dh/(2*6378000):0;
+  return{Dh,dH:hi+dh0-hv+c};}
+const trigNt='Le cours écrit ΔH = ht + Di·cos V + hv à un endroit et ZB = ZA + hi + d·sin z − Hp à un autre : on utilise ΔH = hi + Di·cos V − hv (hv se retranche, la visée part du point visé).';
+
+function cTrigC(){
+  const ZA=n($('za').value),ZB=n($('zbt').value),meth=$('nm').value,L=TC.map(r=>({D:n(r[0]),V:n(r[1]),hi:n(r[2]),hv:n(r[3])}));
+  if(isNaN(ZA)||L.some(x=>bad([x.D,x.V,x.hi,x.hv])))return MSG;
+  const g=L.map(x=>dH(x.D,x.V,x.hi,x.hv)),dz=g.map(x=>x.dH),Dh=g.map(x=>x.Dh),enc=!isNaN(ZB);
+  const ez=enc?ZA+S(dz)-ZB:0,c=enc?rep(dz,Dh,ez,meth):dz;
+  let z=ZA;const rows=c.map((x,i)=>{z+=x;return{c:[i+1,f(L[i].D),f(Dh[i]),f(L[i].V,4),f(L[i].hi,2),f(L[i].hv,2),f(dz[i]),f(x,4),f(z)]};});
+  rows.push({t:1,c:['Σ','',f(S(Dh)),'','','',f(S(dz)),f(S(c),4),'']});
+  let h=tb(['Visée','D (m)','Dh (m)','V (gon)','hi (m)','hv (m)','ΔH (m)','ΔHc (m)','Z avant (m)'],rows);
+  if(!enc)return h+kv([['Altitude du dernier point (m)',f(z)]])+nt_('Cheminement à antenne : aucun contrôle. '+trigNt);
+  const long=Dh.some(x=>x>500),T=Math.sqrt(S(Dh.map(x=>x>500?NaN:9))),ok=!long&&Math.abs(ez)*100<=T;
+  return h+kv([['Écart de fermeture ez (cm)',f(ez*100,1)],['Tolérance T = √ΣTi² (cm)',long?'texte en vigueur':f(T,1)],['Altitude point d\'arrivée compensée (m)',f(z)]])+
+  (long?vd(false,'Visée de plus de 500 m : se référer au texte en vigueur'):vd(ok,ok?'Acceptable : compenser les dénivelées':'À reprendre : |ez| dépasse la tolérance'))+
+  nt_('Tolérance du cours : Ti = 3 cm par visée de 500 m au plus. Fermé : ZB = ZA. '+repTxt(meth).replace('ΔZ','ΔH').replace('ΔZ','ΔH')+' '+trigNt);}
+
+function cTrigR(){
+  const ZS=n($('zs').value),hi=n($('hs').value);
+  if(bad([ZS,hi])||TS.some(r=>bad([n(r[1]),n(r[2]),n(r[3])])))return MSG;
+  const rows=TS.map((r,i)=>{const D=n(r[1]),V=n(r[2]),hv=n(r[3]),g=dH(D,V,hi,hv);return{c:[r[0]||i+1,f(D),f(g.Dh),f(V,4),f(hv,2),f(g.dH),f(ZS+g.dH)]};});
+  return tb(['Point','D (m)','Dh (m)','V (gon)','hv (m)','ΔH (m)','Z = ZS + ΔH (m)'],rows)+nt_('Dh = Di·sin V. '+trigNt);}
+
+function c2(){const m=$('nt').value;
+  $('r2').innerHTML=m==='ar'?cAR():m==='ray'?cRay():m==='trigc'?cTrigC():m==='trigr'?cTrigR():cChem(m);}
+
+/* 4 : profil fictif + cubature */
+const C=[['P1','','4.2','0'],['P2','20','6.8','0'],['P3','20','3.1','1.5'],['PF','15','0','0'],['P4','12','0','5.4'],['P5','20','0','7.2']];
+function c3(){const h1=n($('h1').value),h2=n($('h2').value),D=n($('dd').value);
+$('r3a').innerHTML=(h1+h2>0&&isFinite(D))?kv([['x = h1·D/(h1 + h2) (m)',f(h1*D/(h1+h2),2)],['y = D − x (m)',f(D-h1*D/(h1+h2),2)]]):'<p class="nt">Saisis h1, h2 et D.</p>';
+const M=C.length,d=C.map((r,i)=>i?n(r[1]):0),sd=C.map(r=>n(r[2])),sr=C.map(r=>n(r[3]));
+if(d.slice(1).concat(sd,sr).some(isNaN)){$('r3').innerHTML='<p class="nt">Complète toutes les cases (sauf la distance de la première ligne).</p>';return;}
+const L=d.map((x,i)=>i===0?d[1]/2:i===M-1?d[i]/2:(d[i]+d[i+1])/2);
+let td=0,tl=0,ce=0,cr=0;const rows=C.map((r,i)=>{const ev=sd[i]*L[i],rv=sr[i]*L[i];td+=d[i];tl+=L[i];ce+=ev;cr+=rv;return{c:[r[0],i?f(d[i],1):'-',f(L[i],2),f(sd[i],2),f(ev,1),f(sr[i],2),f(rv,1)]};});
+rows.push({t:1,c:['Totaux',f(td,1),f(tl,2),'',f(ce,0),'',f(cr,0)]});
+$('r3').innerHTML=tb(['Profil','Distance (m)','Long. application (m)','Déblai S (m²)','Déblai (m³)','Remblai S (m²)','Remblai (m³)'],rows)+
+kv([['Bilan remblai − déblai (m³)',f(cr-ce,0)]])+vd(Math.abs(td-tl)<0.001,Math.abs(td-tl)<0.001?'Contrôle ΣD = ΣL : OK':'Erreur : ΣD ≠ ΣL')+
+'<p class="nt">V = Σ Li·Si avec Li = (Di + Di+1)/2 et D/2 aux extrémités.</p>';}
+
+/* 5 : indices */
+function c4(){const g=n($('g').value),r=n($('r').value),N=n($('ni').value),s=n($('sw').value),L=n($('l').value);
+if([g,r,N,s,L].some(isNaN)){$('r4').innerHTML='<p class="nt">Complète toutes les cases.</p>';return;}
+const q=(a,b)=>b===0?NaN:a/b,v=q(N-r,N+r);
+const rows=[['NDVI','(NIR − RED)/(NIR + RED)',v,v>0.5?'Végétation dense':v>0.1?'Végétation modérée à faible':v>=0?'Peu ou pas de végétation':'Eau ou surface artificielle'],
+['SAVI','(NIR − RED)/(NIR + RED + L)·(1 + L)',q(N-r,N+r+L)*(1+L),'NDVI corrigé du sol nu'],
+['MSAVI2','(2·NIR + 1 − √((2·NIR+1)² − 8·(NIR − RED)))/2',(2*N+1-Math.sqrt((2*N+1)**2-8*(N-r)))/2,'Variante du NDVI, effet du sol réduit'],
+['NDBI','(SWIR − NIR)/(SWIR + NIR)',q(s-N,s+N),'Élevé : zones construites'],
+['BSI (cours)','(SWIR − NIR)/(SWIR + NIR)',q(s-N,s+N),'Identique au NDBI dans le cours'],
+['NDWI','(GREEN − NIR)/(GREEN + NIR)',q(g-N,g+N),'Proche de 1 : eau ; proche de −1 : pas d\'eau']].map(x=>({c:[x[0],x[1],f(x[2]),x[3]]}));
+$('r4').innerHTML=tb(['Indice','Formule','Valeur','Lecture'],rows)+'<p class="nt">Seuils du NDVI indicatifs : le cours donne seulement « proche de 1 », « proche de 0 » et « proche de −1 ».</p>';}
+
+/* navigation et initialisation */
+const tabs=['Distance et gisement','Polygonale fermée','Polygonale encadrée','Nivellement','Cubature','Indices spectraux'];
+$('nav').innerHTML=tabs.map((t,i)=>`<button role="tab" data-t="${i}">${t}</button>`).join('');
+let cur=0;
+function show(i){cur=i;document.querySelectorAll('section').forEach((s,k)=>s.classList.toggle('on',k===i));document.querySelectorAll('nav button').forEach((b,k)=>b.setAttribute('aria-selected',k===i));}
+$('nav').onclick=e=>{if(e.target.dataset.t!==undefined)show(+e.target.dataset.t);};
+const vis=()=>document.querySelectorAll('[data-for]').forEach(el=>{el.hidden=!el.dataset.m.split(' ').includes($(el.dataset.for).value);});
+const all=()=>{vis();c0();c0b();c1();cE();c2();c3();c4();};
+document.querySelectorAll('.row input').forEach(i=>i.addEventListener('input',all));
+document.querySelectorAll('.row select').forEach(i=>i.addEventListener('change',all));
+editor($('e0'),['Point','V (gon)','D (m)'],G0,()=>{c0b();});
+editor($('e1'),['β intérieur (gon)','d (m)'],P,c1);
+editor($('e1g'),['V (gon)','d (m)'],PG,c1);
+editor($('eE'),['β (gon)','d (m)'],AE,cE);
+editor($('eEg'),['V (gon)','d (m)'],AG,cE);
+editor($('e2'),['LAR (m)','LAV (m)','d (m)'],NV,c2);
+editor($('e2f'),['LAR (m)','LAV (m)','d (m)'],NF,c2);
+editor($('e2r'),['LAR (m)','LAV (m)','d (m)'],NR,c2);
+editor($('e2m'),['Station n°','Point','LAV (m)'],NM,c2);
+editor($('e2p'),['Point','LAV (m)'],NP,c2);
+editor($('e2t'),['D (m)','V (gon)','hi (m)','hv (m)'],TC,c2);
+editor($('e2s'),['Point','D (m)','V (gon)','hv (m)'],TS,c2);
+editor($('e3'),['Profil','Distance (m)','Déblai S (m²)','Remblai S (m²)'],C,c3);
+/* export PDF : le navigateur propose « Enregistrer au format PDF » */
+const titreOrig=document.title;
+function pdf(all){
+  const d=new Date(),jour=d.toLocaleDateString('fr-FR');
+  const tit=all?'Calculs de topométrie : tous les calculs':'Calculs de topométrie : '+tabs[cur];
+  $('ph').innerHTML='<strong>'+tit+'</strong><span>'+jour+'</span>';
+  document.body.classList.toggle('all',all);
+  document.title=(all?'Calculs-topometrie-complet':'Calcul-'+tabs[cur].replace(/\s+/g,'-'))+'-'+d.toISOString().slice(0,10);
+  window.print();
+}
+window.addEventListener('afterprint',()=>{document.body.classList.remove('all');document.title=titreOrig;});
+$('pdf1').onclick=()=>pdf(false);
+$('pdfAll').onclick=()=>pdf(true);
+
+show(0);all();
+</script>
+</body>
+</html>
